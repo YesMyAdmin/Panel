@@ -1,0 +1,8 @@
+{
+    "translate.desc":"English United States variant",
+    "login.welcome":"Welcome back!",
+    "login.name":"Name",
+    "login.password":"Password",
+    "login.totp":"TOTP 6-Digit number",
+    "login.confirm":"LOGIN"
+}

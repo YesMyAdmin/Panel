@@ -1,0 +1,8 @@
+{
+    "translate.desc":"(通用)繁體中文",
+    "login.welcome": "歡迎回來!",
+    "login.name": "用戶名",
+    "login.password": "密碼",
+    "login.totp": "驗證碼(6位數字)",
+    "login.confirm": "登入"
+}

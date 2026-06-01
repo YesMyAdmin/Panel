@@ -1,0 +1,8 @@
+{
+    "translate.desc":"(通用)简体中文",
+    "login.welcome":"欢迎回来!",
+    "login.name":"用户名",
+    "login.password":"密码",
+    "login.totp":"验证码(6位数字)",
+    "login.confirm":"登录"
+}
