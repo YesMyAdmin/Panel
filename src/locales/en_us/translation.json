@@ -4,5 +4,8 @@
     "login.name":"Name",
     "login.password":"Password",
     "login.totp":"TOTP 6-Digit number",
-    "login.confirm":"LOGIN"
+    "login.confirm":"LOGIN",
+    "init.hello.title":"Hello, my administrator!",
+    "init.hello.hint":"Now, please tell me your name and set a password. You can change these information later in the settings page.",
+    "user.prohibited-weak-credentials.hint":"Do not use names and passwords that are easy for hackers to guess."
 }

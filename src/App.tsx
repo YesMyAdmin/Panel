@@ -1,13 +1,11 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import i18n from 'i18next'
+import LanguageDetector from 'i18next-browser-languagedetector';
+import initReactI18next from 'i18next-browser-languagedetector'
 
-function App() {
+function I18n() {
   i18n
     .use(LanguageDetector)
-    .use(initReactI18next)
+    .use(initReactI18next)  
     .init({
       fallbackLng: 'zh_CN',
       debug: false,
@@ -26,13 +24,13 @@ function App() {
         zh_TW: { translation: require('./locales/zh_hant/translation.json') },
       },
     });
-
-  export default i18n;
-  return (
-    <>
-
-    </>
-  )
 }
 
-export default App
+export function App() {
+  I18n()
+  return (
+    <div className="App">
+      <h1>Hello World</h1>
+    </div>
+  );
+}
