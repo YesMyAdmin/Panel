@@ -2,9 +2,9 @@ import i18n from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import initReactI18next from "i18next-browser-languagedetector";
 import { HelloPage } from "./views/hello";
-import enUSTranslation from "./locales/en_us/translation.json";
-import zhHansTranslation from "./locales/zh_hans/translation.json";
-import zhHantTranslation from "./locales/zh_hant/translation.json";
+import enUSTranslation from "@/locales/en_us/translation.json";
+import zhHansTranslation from "@/locales/zh_hans/translation.json";
+import zhHantTranslation from "@/locales/zh_hant/translation.json";
 import "./App.css";
 
 function I18n() {
