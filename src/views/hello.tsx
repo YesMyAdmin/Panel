@@ -20,21 +20,26 @@ import {useState} from "react";
 export function HelloPage() {
     const {t} = useTranslation();
     const [hideOtpView, setHideOtpView] = useState(true);
-    const [otpQrCode, setOtpQrCode] = useState("");
+    // otp验证码图片(base64)
+    const [otpQrCode, setOtpQrCode] = useState(null);
 
     const afterSubmit = () => {
         setHideOtpView(false);
         const newUser: NewUserRequest = {
-            name: "",
-            password: "",
-            inviteToken: "",
+            name: null,
+            password: null,
+            inviteToken: null,
             otp: {
                 provider: "totp"
             }
         }
         activateUser(newUser).then(response => {
-            setOtpQrCode(response.data.otp.qrcode);
-            // Handle response
+            const qrcode = response.data.otp.qrcode;
+            if (qrcode.startsWith("data:image/png;base64,")) {
+                setOtpQrCode(qrcode);
+            } else {
+                setOtpQrCode("data:image/png;base64," + qrcode);
+            }
         });
     }
 
@@ -93,7 +98,7 @@ export function HelloPage() {
                         <FieldDescription>
                             {t('user.otp.setup.hint')}
                         </FieldDescription>
-                        <img src="/assets/default-otp.png" alt="OTP QR Code" className="w-48 h-48"/>
+                        <img src={otpQrCode} alt="OTP QR Code" className="w-48 h-48"/>
                         <Field>
                             <FieldLabel htmlFor="otp">
                                 {t('login.totp')}
