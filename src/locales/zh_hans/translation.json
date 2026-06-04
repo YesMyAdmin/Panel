@@ -5,9 +5,12 @@
     "login.password":"密码",
     "login.totp":"验证码(6位数字)",
     "login.confirm":"登录",
+    "init.hello.title":"你好，管理员！",
+    "init.hello.hint":"这里是YesMyAdmin运维平台的初始化页面。现在请告诉我你的用户名称，并为你的账号设置一个密码。你稍后可以在设置页面修改这些信息。",
     "user.prohibited-weak-credentials.hint":"不要使用容易被黑客猜到的用户名和密码",
     "hello.agree-to-terms.checkbox":"我同意和你签订契约",
     "hello.otp.set":"下一步",
     "user.otp.setup.title":"两步验证绑定",
-    "user.otp.setup.hint":"请使用OTP认证器(比如Google Authenticator)扫描二维码并输入生成的验证码"
+    "user.otp.setup.hint":"请使用OTP认证器(比如Google Authenticator)扫描二维码并输入生成的验证码",
+    "hello.otp.enable.hint":"为你启用两步验证以加强安全性"
 }
