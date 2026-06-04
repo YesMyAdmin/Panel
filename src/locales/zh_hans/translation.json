@@ -9,8 +9,16 @@
     "init.hello.hint":"这里是YesMyAdmin运维平台的初始化页面。现在请告诉我你的用户名称，并为你的账号设置一个密码。你稍后可以在设置页面修改这些信息。",
     "user.prohibited-weak-credentials.hint":"不要使用容易被黑客猜到的用户名和密码",
     "hello.agree-to-terms.checkbox":"我同意和你签订契约",
-    "hello.otp.set":"下一步",
+    "hello.start":"进入系统",
     "user.otp.setup.title":"两步验证绑定",
     "user.otp.setup.hint":"请使用OTP认证器(比如Google Authenticator)扫描二维码并输入生成的验证码",
-    "hello.otp.enable.hint":"为你启用两步验证以加强安全性"
+    "hello.otp.enable.hint":"为你的账号启用两步验证以加强安全性",
+    "statement.not.affiliated":"YesMyAdmin是几个闲着无聊的人开发的免费软件产品，与任何企业（如Mojang AB、Microsoft Corporation）没有任何关系。",
+    "statement.copyright":"Minecraft是Mojang AB的注册商标。YesMyAdmin虽然用于Minecraft服务器的运维，但不冒用Minecraft的商标和任何受到知识产权法案保护的闭源代码。",
+    "statement.anti.fraud":"YesMyAdmin是免费、正大光明和没有恶意的。如果有人出售YesMyAdmin，或冒充开发者向你索要不当好处或者骗取私密信息，或诱骗你下载被植入恶意代码的软件，请向这人出现的社交媒体平台或受理相关案件的司法机构举报。",
+    "otp.setup.title":"设置两步验证码",
+    "otp.setup.step.1":"在设置你的两步验证码之前，请先在手机上安装一个OTP认证器应用程序（例如Google Authenticator）。",
+    "otp.setup.step.2":"然后，打开你的OTP认证器扫描下方二维码。",
+    "otp.setup.step.3":"最后，输入手机OTP认证器显示的6位数字验证码以完成设置。",
+    "otp.setup.confirm":"确认"
 }

@@ -1,7 +1,7 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
 export const client = axios.create({
-  baseURL: 'https://api.example.com',
+  baseURL: 'https://localhost:8080',
   timeout: 10000,
   headers: { 'Content-Type': 'application/json' }
 });

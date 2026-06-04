@@ -1,4 +1,4 @@
-import {client, type ResponseBody} from "./axiosGeneral";
+import {client, type ResponseBody} from "@/model/axios-general";
 
 export interface NewUserRequest {
     name: string;
