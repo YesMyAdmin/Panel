@@ -1,7 +1,8 @@
-import { HelloPage } from "./views/hello";
+//import { HelloPage } from "./views/hello";
 import "./App.css";
 import "@/utils/i18n";
+import { PanelPage } from "./views/panel";
 
 export function App() {
-  return <HelloPage />;
+  return <PanelPage children={undefined} />;
 }
