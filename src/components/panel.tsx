@@ -154,13 +154,17 @@ function CustomSidebar() {
 /**
  * 面板页面组件，包含一个侧边栏和一个主内容区域
  */
-export function PanelPage({children}: { children: React.ReactNode }) {
+export function Panel({children}: { children: React.ReactNode }) {
     return (
         <SidebarProvider>
             <CustomSidebar/>
             <main>
-                <SidebarTrigger/>
-                {children}
+                <div className="w-8 h-8">
+                    <SidebarTrigger/>
+                </div>
+                <div className="ml-20 mr-20 mt-8">
+                    {children}
+                </div>
             </main>
         </SidebarProvider>
     );
