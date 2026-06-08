@@ -29,7 +29,7 @@ import {InputGroup, InputGroupAddon, InputGroupInput} from "@/components/ui/inpu
  */
 function CustomSidebar() {
     return (
-        <Sidebar>
+        <Sidebar className="border-r-gray-200">
             <SidebarHeader>
                 <InputGroup>
                     <InputGroupInput placeholder='搜索功能'/>
@@ -162,7 +162,7 @@ export function Panel({children}: { children: React.ReactNode }) {
                 <div className="w-8 h-8">
                     <SidebarTrigger/>
                 </div>
-                <div className="ml-80 mr-80 mt-8">
+                <div className="max-w-4/5 justify-center items-center mx-auto">
                     {children}
                 </div>
             </main>
