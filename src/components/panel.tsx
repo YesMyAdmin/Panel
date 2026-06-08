@@ -162,7 +162,7 @@ export function Panel({children}: { children: React.ReactNode }) {
                 <div className="w-8 h-8">
                     <SidebarTrigger/>
                 </div>
-                <div className="ml-20 mr-20 mt-8">
+                <div className="ml-80 mr-80 mt-8">
                     {children}
                 </div>
             </main>

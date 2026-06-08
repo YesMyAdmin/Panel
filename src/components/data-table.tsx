@@ -13,6 +13,8 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -31,7 +33,20 @@ export function DataTable<TData, TValue>({columns, data}: DataTableProps<TData, 
     }
   );
   return (
+    
     <div className="overflow-hidden rounded-sm border border-gray-200">
+      <div className="flex items-left m-3">
+        <Button variant="outline">
+          全部停用
+        </Button>
+        <Button variant="outline" className="ml-2 mr-2">
+          全部删除
+        </Button>
+        <Input
+          placeholder="查找任务..."
+          className="max-w-fit"
+        />
+      </div>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

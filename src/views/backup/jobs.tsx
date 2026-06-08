@@ -1,8 +1,11 @@
 import { DataTable } from "@/components/data-table";
 import { Panel } from "@/components/panel";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import type { ColumnDef } from "@tanstack/react-table";
+import { Ellipsis } from "lucide-react";
 
 /**
  * 备份任务展示对象
@@ -31,6 +34,28 @@ type BackupJobVO = {
 };
 
 const columns: ColumnDef<BackupJobVO>[] = [
+    {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: "maidName",
     header: "Maid节点",
@@ -50,6 +75,14 @@ const columns: ColumnDef<BackupJobVO>[] = [
       <Switch checked={"on" == row.getValue("switch") ? true : false} />
     ),
   },
+  {
+    id: "operate",
+    cell: () => (
+      <Button>
+        <Ellipsis/>
+      </Button>
+    )
+  }
 ];
 
 const data: BackupJobVO[] = [
