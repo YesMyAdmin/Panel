@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {useMemo} from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -39,46 +40,50 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  //往第一行放入勾选框
-  columns.unshift({
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  });
-  //最后一列放"查看详情"按钮
-  columns.push({
-    id: "operate",
-    header: () => (
-      <Button variant="secondary">
-        <Plus />
-      </Button>
-    ),
-    cell: () => (
-      <Button variant="ghost">
-        <Ellipsis />
-      </Button>
-    ),
-  });
+  const columnsRef = useMemo(() => {
+    //往第一行放入勾选框
+    const selectColumn = {
+      id: "select",
+      header: ({ table }) => (
+          <Checkbox
+              checked={
+                  table.getIsAllPageRowsSelected() ||
+                  (table.getIsSomePageRowsSelected() && "indeterminate")
+              }
+              onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+              aria-label="Select all"
+          />
+      ),
+      cell: ({ row }) => (
+          <Checkbox
+              checked={row.getIsSelected()}
+              onCheckedChange={(value) => row.toggleSelected(!!value)}
+              aria-label="Select row"
+          />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    };
+    //最后一列放"查看详情"按钮
+    const operateColumn = {
+      id: "operate",
+      header: () => (
+          <Button variant="secondary">
+            <Plus />
+          </Button>
+      ),
+      cell: () => (
+          <Button variant="ghost">
+            <Ellipsis />
+          </Button>
+      ),
+    };
+
+    return [selectColumn, ...columns, operateColumn];
+  }, [columns]); // 依赖 columns，当它变化时才重新派生
   const table = useReactTable({
     data,
-    columns,
+    columns: columnsRef,
     getCoreRowModel: getCoreRowModel(),
   });
   return (
@@ -94,10 +99,10 @@ export function DataTable<TData, TValue>({
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id} className="border-b-gray-200">
+                <TableRow key={headerGroup.id} className="border-b-gray-200 text-left">
                   {headerGroup.headers.map((header) => {
                     return (
-                      <TableHead key={header.id} className="align-middle">
+                      <TableHead key={header.id}>
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -116,7 +121,7 @@ export function DataTable<TData, TValue>({
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    className="border-b-gray-200"
+                    className="border-b-gray-200 text-left"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>

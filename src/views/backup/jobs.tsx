@@ -1,7 +1,8 @@
 import {DataTable} from "@/components/data-table";
-import {Panel} from "@/components/panel";
 import {Switch} from "@/components/ui/switch";
 import type {ColumnDef} from "@tanstack/react-table";
+import {useOutletContext} from "react-router";
+import {useEffect} from "react";
 
 /**
  * 备份任务展示对象
@@ -79,12 +80,15 @@ const data: BackupJobVO[] = [
  * 备份任务界面
  */
 export function BackupJobPage() {
+    const { updateTitle } = useOutletContext();
+    useEffect(() => {
+        // 设置布局中的标题
+        updateTitle("备份任务");
+    }, [updateTitle]);
     return (
-        <Panel>
-            <div className="w-full">
-                <DataTable columns={columns} data={data}>
-                </DataTable>
-            </div>
-        </Panel>
+        <div className="w-full">
+            <DataTable columns={columns} data={data}>
+            </DataTable>
+        </div>
     );
 }
