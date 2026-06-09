@@ -97,7 +97,7 @@ export function DataTable<TData, TValue>({
       <div className="flex justify-center">
         <div className="overflow-hidden rounded-sm border border-gray-200 w-9/10 shadow">
           <Table>
-            <TableHeader>
+            <TableHeader className='bg-sidebar'>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id} className="border-b-gray-200 text-left">
                   {headerGroup.headers.map((header) => {
