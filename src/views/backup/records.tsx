@@ -1,6 +1,6 @@
 import {useOutletContext} from "react-router";
 import {useEffect} from "react";
-import {DataTable} from "@/components/data-table";
+import {DataTable} from "@/components/tables";
 import type {ColumnDef} from "@tanstack/react-table";
 
 /**

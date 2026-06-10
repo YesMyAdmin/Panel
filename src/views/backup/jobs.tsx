@@ -1,9 +1,9 @@
-import {DataTable} from "@/components/data-table";
+import {DataTable} from "@/components/tables";
 import {Switch} from "@/components/ui/switch";
 import type {ColumnDef} from "@tanstack/react-table";
 import {useOutletContext} from "react-router";
 import {useEffect} from "react";
-import { ExtendTableColumns } from '@/components/data-table';
+import { ExtendTableColumns } from '@/components/tables';
 
 /**
  * 备份任务展示对象

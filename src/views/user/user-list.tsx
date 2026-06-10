@@ -1,8 +1,6 @@
-import { DataTable, ExtendTableColumns } from "@/components/data-table";
-import { Switch } from "@/components/ui/switch";
-import type { ColumnDef } from "@tanstack/react-table";
-import { useEffect } from "react";
-import { useOutletContext } from "react-router";
+import {MultiLevelTable, SimpleTable} from "@/components/tables";
+import {type ColumnDef} from "@tanstack/react-table";
+import {Switch} from "@/components/ui/switch";
 
 type UserListVO = {
     /**
@@ -31,18 +29,58 @@ type UserListVO = {
     frozen: boolean,
 }
 
-const data: UserListVO[] = [
+type UserGroupVO = {
+    groupId: string;
+    groupName: string;
+    groupDesc: string;
+    users: UserListVO[];
+}
+
+const parentData :UserGroupVO[] = [
     {
-        userId:"1653456841654",
-        name:"ru0_y1",
-        credentialProviders:"仅密码(不安全)",
+        groupId:"1264871236423",
+        groupName: "superuser",
+        groupDesc: "超级用户",
+        users: [
+            {
+                userId:"1653456841653",
+                name:"Herobrine",
+                credentialProviders:"密码+TOTP",
+                groupId:"1264871236423",
+                groupName:"superuser",
+                frozen: false
+            }
+        ]
+    },
+    {
         groupId:"56468468468",
-        groupName:"op",
-        frozen: false
+        groupName: "op",
+        groupDesc: "运维人员",
+        users: [
+            {
+                userId:"1653456841654",
+                name:"ru0_y1",
+                credentialProviders:"仅密码(不安全)",
+                groupId:"56468468468",
+                groupName:"op",
+                frozen: false
+            }
+        ]
     }
 ]
 
-const columns: ColumnDef<UserListVO>[] = [
+const parentColumns: ColumnDef<UserGroupVO>[] = [
+    {
+        accessorKey: "groupName",
+        header: "用户组",
+    },
+    {
+        accessorKey: "groupDesc",
+        header: "备注",
+    }
+]
+
+const childColumns: ColumnDef<UserListVO>[] = [
     {
         accessorKey: "name",
         header: "用户名",
@@ -66,15 +104,16 @@ const columns: ColumnDef<UserListVO>[] = [
 
 
 export function UserListPage(){
-    const { updateTitle } = useOutletContext();
-    useEffect(() => {
-        // 设置布局中的标题
-        updateTitle("用户列表");
-    }, [updateTitle]);
+
     return (
-        <div className="w-full">
-            <DataTable columns={ExtendTableColumns(columns)} data={data}>
-            </DataTable>
-        </div>
-    );
+        <MultiLevelTable
+            columns={parentColumns}
+            data={parentData}
+            renderSubComponent={({ row }) => (
+                <div className="">
+                    <SimpleTable data={row.original.users} columns={childColumns}/>
+                </div>
+            )}
+        />
+    )
 }

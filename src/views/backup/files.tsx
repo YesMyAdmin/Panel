@@ -1,8 +1,8 @@
 import type {ColumnDef} from "@tanstack/react-table";
-import {DataTable} from "@/components/data-table";
+import {DataTable} from "@/components/tables";
 import {useOutletContext} from "react-router";
 import {useEffect} from "react";
-import { ExtendTableColumns } from '@/components/data-table';
+import { ExtendTableColumns } from '@/components/tables';
 
 /**
  * 备份文件视图对象(列表展示)

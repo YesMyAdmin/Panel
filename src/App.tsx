@@ -7,7 +7,7 @@ import {LoginPage} from "@/views/user/login";
 import {BackupFilesPage} from "@/views/backup/files";
 import {Panel} from "./views/layout";
 import {BackupRecordsPage} from "@/views/backup/records";
-import { UserListPage } from "./views/user/user-list";
+import {UserListPage} from "./views/user/user-list";
 
 export function App() {
     return (
