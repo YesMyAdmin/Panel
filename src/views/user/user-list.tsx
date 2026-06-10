@@ -2,6 +2,8 @@ import {MultiLevelTable, SimpleTable} from "@/components/tables";
 import {type ColumnDef} from "@tanstack/react-table";
 import {Switch} from "@/components/ui/switch";
 import { ExtendTableColumns } from '../../components/tables';
+import { useEffect } from "react";
+import { useOutletContext } from "react-router";
 
 type UserListVO = {
     /**
@@ -105,6 +107,11 @@ const childColumns: ColumnDef<UserListVO>[] = [
 
 
 export function UserListPage(){
+    const { updateTitle } = useOutletContext();
+    useEffect(() => {
+        // 设置布局中的标题
+        updateTitle("用户列表");
+    }, [updateTitle]);
     const extendedChildColumns = ExtendTableColumns(childColumns)
     return (
         <MultiLevelTable
