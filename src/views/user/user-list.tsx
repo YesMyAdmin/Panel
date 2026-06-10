@@ -1,6 +1,7 @@
 import {MultiLevelTable, SimpleTable} from "@/components/tables";
 import {type ColumnDef} from "@tanstack/react-table";
 import {Switch} from "@/components/ui/switch";
+import { ExtendTableColumns } from '../../components/tables';
 
 type UserListVO = {
     /**
@@ -104,14 +105,14 @@ const childColumns: ColumnDef<UserListVO>[] = [
 
 
 export function UserListPage(){
-
+    const extendedChildColumns = ExtendTableColumns(childColumns)
     return (
         <MultiLevelTable
-            columns={parentColumns}
+            columns={ExtendTableColumns(parentColumns)}
             data={parentData}
             renderSubComponent={({ row }) => (
-                <div className="">
-                    <SimpleTable data={row.original.users} columns={childColumns}/>
+                <div className="border-b-0">
+                    <SimpleTable data={row.original.users} columns={extendedChildColumns}/>
                 </div>
             )}
         />

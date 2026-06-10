@@ -109,8 +109,7 @@ const sidebarData: SidebarGroupData[] = [
                 label: "用户管理",
                 icon: BookUser,
                 children: [
-                    {label: "用户列表", to: "/user/list"},
-                    {label: "用户组管理", to: "/user/groups"}
+                    {label: "用户列表", to: "/user/list"}
                 ],
             },
             {
