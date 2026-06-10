@@ -40,50 +40,9 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const columnsRef = useMemo(() => {
-    //往第一行放入勾选框
-    const selectColumn = {
-      id: "select",
-      header: ({ table }) => (
-          <Checkbox
-              checked={
-                  table.getIsAllPageRowsSelected() ||
-                  (table.getIsSomePageRowsSelected() && "indeterminate")
-              }
-              onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-              aria-label="Select all"
-          />
-      ),
-      cell: ({ row }) => (
-          <Checkbox
-              checked={row.getIsSelected()}
-              onCheckedChange={(value) => row.toggleSelected(!!value)}
-              aria-label="Select row"
-          />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    };
-    //最后一列放"查看详情"按钮
-    const operateColumn = {
-      id: "operate",
-      header: () => (
-          <Button variant="secondary">
-            <Plus />
-          </Button>
-      ),
-      cell: () => (
-          <Button variant="ghost">
-            <Ellipsis />
-          </Button>
-      ),
-    };
-
-    return [selectColumn, ...columns, operateColumn];
-  }, [columns]); // 依赖 columns，当它变化时才重新派生
   const table = useReactTable({
     data,
-    columns: columnsRef,
+    columns: columns,
     getCoreRowModel: getCoreRowModel(),
   });
   return (
@@ -99,10 +58,10 @@ export function DataTable<TData, TValue>({
           <Table>
             <TableHeader className='bg-sidebar'>
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id} className="border-b-gray-200 text-left">
+                <TableRow key={headerGroup.id} className="border-b-gray-200">
                   {headerGroup.headers.map((header) => {
                     return (
-                      <TableHead key={header.id}>
+                      <TableHead key={header.id} className={header.column.id === 'operate-menu' ? 'text-right' : 'text-left'}>
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -121,10 +80,10 @@ export function DataTable<TData, TValue>({
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    className="border-b-gray-200 text-left"
+                    className="border-b-gray-200"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell key={cell.id} className={cell.column.id === 'operate-menu' ? 'text-right' : 'text-left'}>
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext(),
@@ -171,4 +130,55 @@ export function DataTable<TData, TValue>({
       </Pagination>
     </div>
   );
+}
+
+
+/**
+ * 为数据表列添加勾选框和选项卡
+ * @param columns 原始数据列
+ * @returns 添加勾选框和选项卡的数据列
+ */
+export function ExtendTableColumns<TData, TValue>(columns: ColumnDef<TData, TValue>[]): ColumnDef<TData, TValue>[] {
+    const columnsRef = useMemo(() => {
+    //往第一行放入勾选框
+    const selectColumn = {
+      id: "select",
+      header: ({ table }) => (
+          <Checkbox className="text-left"
+              checked={
+                  table.getIsAllPageRowsSelected() ||
+                  (table.getIsSomePageRowsSelected() && "indeterminate")
+              }
+              onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+              aria-label="Select all"
+          />
+      ),
+      cell: ({ row }) => (
+          <Checkbox
+              checked={row.getIsSelected()}
+              onCheckedChange={(value) => row.toggleSelected(!!value)}
+              aria-label="Select row"
+          />
+      ),
+      style: { textAlign: 'left' }
+    };
+    //最后一列放"查看详情"按钮
+    const operateColumn = {
+      id: "operate-menu",
+      header: () => (
+          <Button variant="secondary">
+            <Plus />
+          </Button>
+      ),
+      cell: () => (
+          <Button variant="ghost">
+            <Ellipsis />
+          </Button>
+      ),
+      style: { textAlign: 'right' }
+    };
+
+    return [selectColumn, ...columns, operateColumn];
+  }, [columns]); // 依赖 columns，当它变化时才重新派生
+  return columnsRef;
 }

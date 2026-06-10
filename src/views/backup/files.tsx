@@ -2,6 +2,7 @@ import type {ColumnDef} from "@tanstack/react-table";
 import {DataTable} from "@/components/data-table";
 import {useOutletContext} from "react-router";
 import {useEffect} from "react";
+import { ExtendTableColumns } from '@/components/data-table';
 
 /**
  * 备份文件视图对象(列表展示)
@@ -101,7 +102,7 @@ export function BackupFilesPage() {
     }, [updateTitle]);
     return (
         <div className="w-full">
-            <DataTable columns={columns} data={data}>
+            <DataTable columns={ExtendTableColumns(columns)} data={data}>
             </DataTable>
         </div>
     );

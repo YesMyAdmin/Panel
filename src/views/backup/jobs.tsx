@@ -3,6 +3,7 @@ import {Switch} from "@/components/ui/switch";
 import type {ColumnDef} from "@tanstack/react-table";
 import {useOutletContext} from "react-router";
 import {useEffect} from "react";
+import { ExtendTableColumns } from '@/components/data-table';
 
 /**
  * 备份任务展示对象
@@ -87,7 +88,7 @@ export function BackupJobPage() {
     }, [updateTitle]);
     return (
         <div className="w-full">
-            <DataTable columns={columns} data={data}>
+            <DataTable columns={ExtendTableColumns(columns)} data={data}>
             </DataTable>
         </div>
     );

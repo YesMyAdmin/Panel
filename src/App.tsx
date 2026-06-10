@@ -7,6 +7,7 @@ import {LoginPage} from "@/views/user/login";
 import {BackupFilesPage} from "@/views/backup/files";
 import {Panel} from "./views/layout";
 import {BackupRecordsPage} from "@/views/backup/records";
+import { UserListPage } from "./views/user/user-list";
 
 export function App() {
     return (
@@ -16,6 +17,7 @@ export function App() {
                     <Route path="/backup/jobs" element={<BackupJobPage/>}/>
                     <Route path="/backup/files" element={<BackupFilesPage/>}/>
                     <Route path="/backup/records" element={<BackupRecordsPage/>}/>
+                    <Route path="/user/list" element={<UserListPage/>}/>
                     <Route path="/hello" element={<HelloPage/>}/>
                     <Route path="/login" element={<LoginPage/>}/>
                 </Route>
