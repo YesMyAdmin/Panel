@@ -48,137 +48,278 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {Outlet} from "react-router/internal/react-server-client";
-import {useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {Link} from "react-router";
+
+/**
+ * 侧边栏菜单数据结构定义
+ */
+interface LeafItem {
+    label: string;
+    to?: string; // 有 to 时用 Link 渲染
+}
+
+/**
+ * 侧边栏菜单数据结构定义
+ */
+interface MenuItem {
+    type: "item" | "collapsible";
+    label: string;
+    icon?: React.ComponentType<{ className?: string }>;
+    to?: string; // 仅 type=item 时有效
+    children?: LeafItem[]; // 仅 type=collapsible 时有效
+}
+
+/**
+ * 侧边栏菜单数据结构定义
+ */
+interface SidebarGroupData {
+    groupLabel: string;
+    items: MenuItem[];
+}
+
+// ---------- 可任意增删的动态菜单数据 ----------
+const sidebarData: SidebarGroupData[] = [
+    {
+        groupLabel: "运维面板",
+        items: [
+            {
+                type: "item",
+                label: "概览",
+                icon: ChartPie,
+                to: "/overview",
+            },
+            {
+                type: "collapsible",
+                label: "备份管理",
+                icon: AppWindow,
+                children: [
+                    {label: "备份任务", to: "/backup/jobs"},
+                    {label: "备份文件", to: "/backup/files"},
+                    {label: "备份记录", to: "/backup/records"},
+                ],
+            },
+        ],
+    },
+    {
+        groupLabel: "系统管理",
+        items: [
+            {
+                type: "collapsible",
+                label: "用户管理",
+                icon: BookUser,
+                children: [
+                    {label: "用户列表", to: "/user/list"},
+                    {label: "用户组管理", to: "/user/groups"}
+                ],
+            },
+            {
+                type: "collapsible",
+                label: "系统设置",
+                icon: Settings2,
+                children: [
+                    {label: "Maid节点"},
+                    {label: "系统配置"},
+                    {label: "删库跑路"},
+                ],
+            },
+            {
+                type: "collapsible",
+                label: "文档中心",
+                icon: LibraryBig,
+                children: [
+                    {label: "使用说明"},
+                    {label: "服务契约"},
+                    {label: "保密条款"},
+                    {label: "免责声明"},
+                    {label: "开源组件许可证"},
+                ],
+            },
+        ],
+    },
+];
+
 
 /**
  * 自定义侧边栏
  * @returns 自定义侧边栏
  */
 function CustomSidebar() {
+    const [search, setSearch] = useState("");
+    const [openStates, setOpenStates] = useState<Record<string, boolean>>({});
+
+    // 初始化：所有可折叠菜单默认展开
+    useEffect(() => {
+        const initial: Record<string, boolean> = {};
+        sidebarData.forEach((group) => {
+            group.items.forEach((item) => {
+                if (item.type === "collapsible") {
+                    const id = `${group.groupLabel}-${item.label}`;
+                    initial[id] = true;
+                }
+            });
+        });
+        setOpenStates(initial);
+    }, []);
+
+    // 根据搜索词过滤菜单
+    const filteredGroups = useMemo(() => {
+        if (!search.trim()) return sidebarData;
+
+        const query = search.toLowerCase();
+        return sidebarData
+            .map((group) => {
+                const groupMatch = group.groupLabel.toLowerCase().includes(query);
+                const filteredItems = group.items
+                    .map((item) => {
+                        if (item.type === "item") {
+                            return item.label.toLowerCase().includes(query) ? item : null;
+                        }
+                        // 折叠菜单
+                        const labelMatch = item.label.toLowerCase().includes(query);
+                        const matchedChildren = item.children?.filter((child) =>
+                            child.label.toLowerCase().includes(query)
+                        ) ?? [];
+                        if (labelMatch || matchedChildren.length > 0) {
+                            return {
+                                ...item,
+                                children: labelMatch ? item.children : matchedChildren,
+                            };
+                        }
+                        return null;
+                    })
+                    .filter(Boolean) as MenuItem[];
+
+                return groupMatch || filteredItems.length > 0
+                    ? {...group, items: filteredItems}
+                    : null;
+            })
+            .filter(Boolean) as SidebarGroupData[];
+    }, [search]);
+
+    // 当前可见的折叠菜单 id 列表
+    const visibleCollapsibleIds = useMemo(() => {
+        const ids: string[] = [];
+        filteredGroups.forEach((group) => {
+            group.items.forEach((item) => {
+                if (item.type === "collapsible") {
+                    ids.push(`${group.groupLabel}-${item.label}`);
+                }
+            });
+        });
+        return ids;
+    }, [filteredGroups]);
+
+    // 搜索时强制展开可见折叠菜单，清空搜索时恢复全部展开
+    useEffect(() => {
+        if (search.trim()) {
+            setOpenStates((prev) => {
+                const next = {...prev};
+                visibleCollapsibleIds.forEach((id) => (next[id] = true));
+                return next;
+            });
+        } else {
+            setOpenStates((prev) => {
+                const next = {...prev};
+                Object.keys(next).forEach((key) => (next[key] = true));
+                return next;
+            });
+        }
+    }, [search, visibleCollapsibleIds]);
     const {isMobile} = useSidebar();
     return (
         <Sidebar className="border-r-0">
             <SidebarHeader>
                 <InputGroup>
-                    <InputGroupInput placeholder="搜索功能"/>
+                    <InputGroupInput placeholder="搜索功能" value={search}
+                                     onChange={(e) => setSearch(e.target.value)}/>
                     <InputGroupAddon>
                         <Search/>
                     </InputGroupAddon>
                 </InputGroup>
             </SidebarHeader>
             <SidebarContent>
-                <SidebarGroup>
-                    <SidebarGroupLabel>运维面板</SidebarGroupLabel>
-                    <SidebarGroupContent>
-                        <SidebarMenu>
-                            <SidebarMenuItem>
-                                <SidebarMenuButton>
-                                    <ChartPie/>
-                                    概览
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                            <Collapsible defaultOpen className="group/collapsible">
-                                <SidebarMenuItem>
-                                    <CollapsibleTrigger asChild>
-                                        <SidebarMenuButton>
-                                            <AppWindow/>
-                                            备份管理
-                                            <ChevronRight
-                                                className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90"/>
-                                        </SidebarMenuButton>
-                                    </CollapsibleTrigger>
-                                    <CollapsibleContent>
-                                        <SidebarMenuSub>
-                                            <SidebarMenuItem>
+                {/* 动态渲染分组及菜单 */}
+                {filteredGroups.map((group) => (
+                    <SidebarGroup key={group.groupLabel}>
+                        <SidebarGroupLabel>{group.groupLabel}</SidebarGroupLabel>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                {group.items.map((item) => {
+                                    if (item.type === "item") {
+                                        const Icon = item.icon;
+                                        return (
+                                            <SidebarMenuItem key={item.label}>
                                                 <SidebarMenuButton asChild>
-                                                    <Link to="/backup/jobs">备份任务</Link>
+                                                    {item.to ? (
+                                                        <Link to={item.to}>
+                                                            {Icon && <Icon className="h-4 w-4"/>}
+                                                            {item.label}
+                                                        </Link>
+                                                    ) : (
+                                                        <span>{Icon && <Icon className="h-4 w-4"/>}{item.label}</span>
+                                                    )}
                                                 </SidebarMenuButton>
                                             </SidebarMenuItem>
+                                        );
+                                    }
+
+                                    // 折叠菜单
+                                    const Icon = item.icon;
+                                    const collapsibleId = `${group.groupLabel}-${item.label}`;
+                                    const isOpen = openStates[collapsibleId] ?? true;
+
+                                    return (
+                                        <Collapsible
+                                            key={item.label}
+                                            open={isOpen}
+                                            onOpenChange={(open) =>
+                                                setOpenStates((prev) => ({
+                                                    ...prev,
+                                                    [collapsibleId]: open,
+                                                }))
+                                            }
+                                            className="group/collapsible"
+                                        >
                                             <SidebarMenuItem>
-                                                <SidebarMenuButton asChild>
-                                                    <Link to="/backup/files">备份文件</Link>
-                                                </SidebarMenuButton>
+                                                <CollapsibleTrigger asChild>
+                                                    <SidebarMenuButton>
+                                                        {Icon && <Icon className="h-4 w-4"/>}
+                                                        {item.label}
+                                                        <ChevronRight
+                                                            className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90"/>
+                                                    </SidebarMenuButton>
+                                                </CollapsibleTrigger>
+                                                <CollapsibleContent>
+                                                    <SidebarMenuSub>
+                                                        {item.children?.map((child) => (
+                                                            <SidebarMenuItem key={child.label}>
+                                                                <SidebarMenuButton asChild>
+                                                                    {child.to ? (
+                                                                        <Link to={child.to}>{child.label}</Link>
+                                                                    ) : (
+                                                                        <span>{child.label}</span>
+                                                                    )}
+                                                                </SidebarMenuButton>
+                                                            </SidebarMenuItem>
+                                                        ))}
+                                                    </SidebarMenuSub>
+                                                </CollapsibleContent>
                                             </SidebarMenuItem>
-                                            <SidebarMenuItem>
-                                                <SidebarMenuButton asChild>
-                                                    <Link to="/backup/records">备份记录</Link>
-                                                </SidebarMenuButton>
-                                            </SidebarMenuItem>
-                                        </SidebarMenuSub>
-                                    </CollapsibleContent>
-                                </SidebarMenuItem>
-                            </Collapsible>
-                        </SidebarMenu>
-                    </SidebarGroupContent>
-                </SidebarGroup>
-                <SidebarGroup>
-                    <SidebarGroupLabel>系统管理</SidebarGroupLabel>
-                    <SidebarMenu>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton>
-                                <BookUser/>
-                                用户管理
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <Collapsible defaultOpen className="group/collapsible">
-                            <SidebarMenuItem>
-                                <CollapsibleTrigger asChild>
-                                    <SidebarMenuButton>
-                                        <Settings2/>
-                                        系统设置
-                                        <ChevronRight
-                                            className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90"/>
-                                    </SidebarMenuButton>
-                                </CollapsibleTrigger>
-                                <CollapsibleContent>
-                                    <SidebarMenuSub>
-                                        <SidebarMenuItem>
-                                            <SidebarMenuButton>Maid节点</SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                        <SidebarMenuItem>
-                                            <SidebarMenuButton>系统配置</SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                        <SidebarMenuItem>
-                                            <SidebarMenuButton>删库跑路</SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                    </SidebarMenuSub>
-                                </CollapsibleContent>
-                            </SidebarMenuItem>
-                        </Collapsible>
-                        <Collapsible defaultOpen className="group/collapsible">
-                            <SidebarMenuItem>
-                                <CollapsibleTrigger asChild>
-                                    <SidebarMenuButton>
-                                        <LibraryBig/>
-                                        文档中心
-                                        <ChevronRight
-                                            className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90"/>
-                                    </SidebarMenuButton>
-                                </CollapsibleTrigger>
-                                <CollapsibleContent>
-                                    <SidebarMenuSub>
-                                        <SidebarMenuItem>
-                                            <SidebarMenuButton>使用说明</SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                        <SidebarMenuItem>
-                                            <SidebarMenuButton>服务契约</SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                        <SidebarMenuItem>
-                                            <SidebarMenuButton>保密条款</SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                        <SidebarMenuItem>
-                                            <SidebarMenuButton>免责声明</SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                        <SidebarMenuItem>
-                                            <SidebarMenuButton>开源组件许可证</SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                    </SidebarMenuSub>
-                                </CollapsibleContent>
-                            </SidebarMenuItem>
-                        </Collapsible>
-                    </SidebarMenu>
-                </SidebarGroup>
+                                        </Collapsible>
+                                    );
+                                })}
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                ))}
+
+                {/* 搜索无结果提示 */}
+                {filteredGroups.length === 0 && (
+                    <div className="px-4 py-8 text-center text-sm text-muted-foreground">
+                        未找到匹配的菜单
+                    </div>
+                )}
             </SidebarContent>
             <SidebarFooter>
                 <SidebarMenu>
@@ -227,6 +368,7 @@ function CustomSidebar() {
         </Sidebar>
     );
 }
+
 /**
  * 面板页面组件，包含一个侧边栏和一个主内容区域
  */
@@ -252,7 +394,7 @@ export function Panel() {
                         <span className="text-sm ml-1">{title}</span>
                     </div>
                     <div className="max-w-4/5 mx-auto">
-                        <Outlet context={{ updateTitle }} />
+                        <Outlet context={{updateTitle}}/>
                     </div>
                 </div>
             </main>
