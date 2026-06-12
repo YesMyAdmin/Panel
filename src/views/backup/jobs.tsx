@@ -1,9 +1,9 @@
-import {DataTable} from "@/components/tables";
-import {Switch} from "@/components/ui/switch";
-import type {ColumnDef} from "@tanstack/react-table";
-import {useOutletContext} from "react-router";
-import {useEffect} from "react";
-import { ExtendTableColumns } from '@/components/tables';
+import { DataTable } from "@/components/tables";
+import { Switch } from "@/components/ui/switch";
+import type { ColumnDef } from "@tanstack/react-table";
+import { useOutletContext } from "react-router";
+import { useEffect } from "react";
+import { operateColumn, tableSelectionColumn } from "@/components/table-elements";
 
 /**
  * 备份任务展示对象
@@ -47,8 +47,8 @@ const columns: ColumnDef<BackupJobVO>[] = [
     {
         accessorKey: "switch",
         header: "任务开关",
-        cell: ({row}) => (
-            <Switch checked={"on" == row.getValue("switch") ? true : false}/>
+        cell: ({ row }) => (
+            <Switch checked={"on" == row.getValue("switch") ? true : false} />
         ),
     }
 ];
@@ -88,7 +88,7 @@ export function BackupJobPage() {
     }, [updateTitle]);
     return (
         <div className="w-full">
-            <DataTable columns={ExtendTableColumns(columns)} data={data}>
+            <DataTable columns={[tableSelectionColumn(), ...columns, operateColumn()]} data={data}>
             </DataTable>
         </div>
     );

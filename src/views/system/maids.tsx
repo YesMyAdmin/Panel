@@ -1,4 +1,5 @@
-import { DataTable, ExtendTableColumns } from "@/components/tables";
+import { tableSelectionColumn, operateColumn } from "@/components/table-elements";
+import { DataTable } from "@/components/tables";
 import { Switch } from "@/components/ui/switch";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useEffect } from "react";
@@ -62,7 +63,7 @@ export function MaidsPage() {
     }, [updateTitle]);
     return (
         <div className="w-full">
-            <DataTable columns={ExtendTableColumns(columns)} data={data}>
+            <DataTable columns={[tableSelectionColumn(), ...columns, operateColumn()]} data={data}>
             </DataTable>
         </div>
     );

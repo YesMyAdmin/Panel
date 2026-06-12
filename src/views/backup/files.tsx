@@ -2,7 +2,7 @@ import type {ColumnDef} from "@tanstack/react-table";
 import {DataTable} from "@/components/tables";
 import {useOutletContext} from "react-router";
 import {useEffect} from "react";
-import { ExtendTableColumns } from '@/components/tables';
+import { operateColumn, tableSelectionColumn } from "@/components/table-elements";
 
 /**
  * 备份文件视图对象(列表展示)
@@ -45,7 +45,7 @@ type BackupFileListVO = {
     recordTime: string;
 }
 
-const columns: ColumnDef<BackupFileListVO>[] = [
+export const columns: ColumnDef<BackupFileListVO>[] = [
     {
         accessorKey: "fileName",
         header: "文件名",
@@ -102,7 +102,7 @@ export function BackupFilesPage() {
     }, [updateTitle]);
     return (
         <div className="w-full">
-            <DataTable columns={ExtendTableColumns(columns)} data={data}>
+            <DataTable columns={[tableSelectionColumn(), ...columns, operateColumn()]} data={data}>
             </DataTable>
         </div>
     );
