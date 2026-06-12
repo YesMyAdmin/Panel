@@ -2,6 +2,7 @@ import {useOutletContext} from "react-router";
 import {useEffect} from "react";
 import {DataTable} from "@/components/tables";
 import type {ColumnDef} from "@tanstack/react-table";
+import { operateColumn, type DropdownGroup } from "@/components/table-elements";
 
 /**
  * 展示备份记录列表
@@ -93,9 +94,26 @@ export function BackupRecordsPage() {
         // 设置布局中的标题
         updateTitle("备份任务");
     }, [updateTitle]);
+
+    const dropdown: DropdownGroup[] = [
+        {
+            label: "操作",
+            dropdownMenu: [
+                {
+                    operatorText: "查看详情",
+                    onclick: ""
+                },
+                {
+                    operatorText: "删除",
+                    onclick: ""
+                }
+            ]
+        }
+    ]
+
     return (
         <div className="w-full">
-            <DataTable columns={columns} data={data}>
+            <DataTable columns={[...columns, operateColumn(dropdown)]} data={data}>
             </DataTable>
         </div>
     );

@@ -1,7 +1,9 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "./ui/button";
 import { ChevronDown, ChevronRight, Ellipsis, Plus } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import type { ReactElement } from "react";
 
 /**
  * 表左侧的勾选框
@@ -38,47 +40,57 @@ export function tableSelectionColumn() {
 /**
  * 下拉栏菜单选项
  */
-export type DropDownMenu = {
-    operatorText: string,
-    onclick: string
+export type DropdownMenu = {
+    operatorText: string;
+    onclick: string;
 };
 
-const defaultDropDownMenu: DropdownMenu[] = [
-    {
-        operatorText: "查看详情/修改",
-        onclick: ""
-    },
-    {
-        operatorText: "删除",
-        onclick: ""
-    }
-];
+/**
+ * 下拉栏菜单组
+ */
+export type DropdownGroup = {
+    label: string;
+    dropdownMenu: DropdownMenu[];
+};
 
 /**
  * 表格最右侧的操作按钮
+ * @param dropDownMenus 操作按钮所需的菜单项
+ * @param addNewItemDialog 添加新项目的对话框(可以留空,但右上角的"新增"按钮将不会显示)
  */
-export function operateColumn(dropDownMenus: DropDownMenu[]) {
+export function operateColumn(dropDownMenus: DropdownGroup[], addNewItemDialog?: ReactElement) {
     return {
         id: "operate-menu",
-        header: () => (
-            <Button variant="secondary">
-                <Plus />
-            </Button>
-        ),
+        header: () => {
+            return addNewItemDialog ? (
+            <Dialog>
+                <DialogTrigger asChild>
+                    <Button variant="secondary">
+                        <Plus />
+                    </Button>
+                </DialogTrigger>
+                {addNewItemDialog}
+            </Dialog>
+            ) : undefined
+        },
         cell: () => (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost"><Ellipsis/></Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                        <DropdownMenuGroup>
-                            <DropdownMenuLabel>操作</DropdownMenuLabel>
-                            {dropDownMenus.map({menu}) => {
-                                <DropdownMenuItem>{menu}</DropdownMenuItem>
-                            }}
-                        </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost"><Ellipsis /></Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                    {
+                        dropDownMenus.map((group) => (
+                            <DropdownMenuGroup>
+                                <DropdownMenuLabel>{group.label}</DropdownMenuLabel>
+                                {group.dropdownMenu.map((menu) => (
+                                    <DropdownMenuItem>{menu.operatorText}</DropdownMenuItem>
+                                ))}
+                            </DropdownMenuGroup>
+                        ))
+                    }
+                </DropdownMenuContent>
+            </DropdownMenu>
         ),
         meta: {
             className: "text-right",

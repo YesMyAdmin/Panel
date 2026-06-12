@@ -2,7 +2,7 @@ import type {ColumnDef} from "@tanstack/react-table";
 import {DataTable} from "@/components/tables";
 import {useOutletContext} from "react-router";
 import {useEffect} from "react";
-import { operateColumn, tableSelectionColumn } from "@/components/table-elements";
+import { operateColumn, tableSelectionColumn, type DropdownGroup } from "@/components/table-elements";
 
 /**
  * 备份文件视图对象(列表展示)
@@ -96,13 +96,30 @@ const data: BackupFileListVO[] = [
  */
 export function BackupFilesPage() {
     const { updateTitle } = useOutletContext();
+
+    const dropdown: DropdownGroup[] = [
+        {
+            label: "操作",
+            dropdownMenu: [
+                {
+                    operatorText: "查看详情",
+                    onclick: ""
+                },
+                {
+                    operatorText: "删除",
+                    onclick: ""
+                }
+            ]
+        }
+    ]
+
     useEffect(() => {
         // 设置布局中的标题
         updateTitle("备份文件列表");
     }, [updateTitle]);
     return (
         <div className="w-full">
-            <DataTable columns={[tableSelectionColumn(), ...columns, operateColumn()]} data={data}>
+            <DataTable columns={[tableSelectionColumn(), ...columns, operateColumn(dropdown)]} data={data}>
             </DataTable>
         </div>
     );

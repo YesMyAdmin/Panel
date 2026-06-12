@@ -1,9 +1,9 @@
-import {MultiLevelTable, SimpleTable} from "@/components/tables";
-import {type ColumnDef} from "@tanstack/react-table";
-import {Switch} from "@/components/ui/switch";
+import { MultiLevelTable, SimpleTable } from "@/components/tables";
+import { type ColumnDef } from "@tanstack/react-table";
+import { Switch } from "@/components/ui/switch";
 import { useEffect } from "react";
 import { useOutletContext } from "react-router";
-import { operateColumn, tableSelectionColumn } from "@/components/table-elements";
+import { operateColumn, tableSelectionColumn, type DropdownGroup } from "@/components/table-elements";
 
 type UserListVO = {
     /**
@@ -39,33 +39,33 @@ type UserGroupVO = {
     users: UserListVO[];
 }
 
-const parentData :UserGroupVO[] = [
+const parentData: UserGroupVO[] = [
     {
-        groupId:"1264871236423",
+        groupId: "1264871236423",
         groupName: "superuser",
         groupDesc: "超级用户",
         users: [
             {
-                userId:"1653456841653",
-                name:"Herobrine",
-                credentialProviders:"密码+TOTP",
-                groupId:"1264871236423",
-                groupName:"superuser",
+                userId: "1653456841653",
+                name: "Herobrine",
+                credentialProviders: "密码+TOTP",
+                groupId: "1264871236423",
+                groupName: "superuser",
                 frozen: false
             }
         ]
     },
     {
-        groupId:"56468468468",
+        groupId: "56468468468",
         groupName: "op",
         groupDesc: "运维人员",
         users: [
             {
-                userId:"1653456841654",
-                name:"ru0_y1",
-                credentialProviders:"仅密码(不安全)",
-                groupId:"56468468468",
-                groupName:"op",
+                userId: "1653456841654",
+                name: "ru0_y1",
+                credentialProviders: "仅密码(不安全)",
+                groupId: "56468468468",
+                groupName: "op",
                 frozen: false
             }
         ]
@@ -99,27 +99,63 @@ const childColumns: ColumnDef<UserListVO>[] = [
     {
         accessorKey: "frozen",
         header: "冻结",
-        cell: ({row}) => (
-            <Switch checked={row.getValue("frozen")}/>
+        cell: ({ row }) => (
+            <Switch checked={row.getValue("frozen")} />
         ),
     }
 ];
 
 
-export function UserListPage(){
+/**
+ * 用户列表页面 
+ */
+export function UserListPage() {
     const { updateTitle } = useOutletContext();
+
+    const groupDropdown: DropdownGroup[] = [
+        {
+            label: "操作",
+            dropdownMenu: [
+                {
+                    operatorText: "查看详情/修改",
+                    onclick: ""
+                },
+                {
+                    operatorText: "删除",
+                    onclick: ""
+                }
+            ]
+        }
+    ]
+
+    const userDropdown: DropdownGroup[] = [
+        {
+            label: "操作",
+            dropdownMenu: [
+                {
+                    operatorText: "查看详情/修改",
+                    onclick: ""
+                },
+                {
+                    operatorText: "删除",
+                    onclick: ""
+                }
+            ]
+        }
+    ]
+
     useEffect(() => {
         // 设置布局中的标题
         updateTitle("用户列表");
     }, [updateTitle]);
-    const extendedChildColumns = [tableSelectionColumn(), ...childColumns, operateColumn()]
+    const extendedChildColumns = [tableSelectionColumn(), ...childColumns, operateColumn(groupDropdown)]
     return (
         <MultiLevelTable
-            columns={[tableSelectionColumn(), ...parentColumns, operateColumn()]}
+            columns={[tableSelectionColumn(), ...parentColumns, operateColumn(userDropdown)]}
             data={parentData}
             renderSubComponent={({ row }) => (
                 <div className="border-b-0">
-                    <SimpleTable data={row.original.users} columns={extendedChildColumns}/>
+                    <SimpleTable data={row.original.users} columns={extendedChildColumns} />
                 </div>
             )}
         />
